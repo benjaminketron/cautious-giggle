@@ -1,0 +1,25 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/cautious-giggle/v15/.suo
+/.vs/OAuthSite/v15/.suo
+/.vs
+/CautiousGiggle.App/obj/x86/Debug
+/CautiousGiggle.Core/bin/Debug
+/CautiousGiggle.Core/obj/Debug
+/CautiousGiggle.Data/bin/Debug
+/CautiousGiggle.Data/obj/Debug
+/CautiousGiggle.Data.Tests/bin/x86/Debug
+/CautiousGiggle.Data.Tests/obj/x86/Debug
+/CautiousGiggle.Oauth/bin/Debug
+/CautiousGiggle.Oauth/obj/Debug
+/CautiousGiggle.OAuth.Tests/bin/x86/Debug
+/CautiousGiggle.OAuth.Tests/obj/x86/Debug
+/CautiousGiggle.Storage/bin/Debug
+/CautiousGiggle.Storage/obj/Debug
+/CautiousGiggle.Storage.Tests/bin/x86/Debug
+/CautiousGiggle.Storage.Tests/obj/x86/Debug
+/OAuthSite/bin
+/OAuthSite/obj
+/**/project.lock.json
