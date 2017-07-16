@@ -5,9 +5,26 @@
     xmlns:local="using:CautiousGiggle.App"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="using:CautiousGiggle.App.ViewModels"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
 
+        <StackPanel Grid.Column="0" Orientation="Vertical">
+            <ListView  x:Name="MainList" 
+              ItemsSource="{x:Bind Items.Items, Mode=OneWay}"  
+              SelectedIndex="{x:Bind Items.SelectedIndex, Mode=TwoWay}" 
+              MinWidth="250" Margin="5">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:IItemViewModel">
+                        <TextBlock Text="{x:Bind Content, Mode=OneWay}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button Content="Sync" Click="{x:Bind  Items.SyncAsync}" Margin="5"/>
+        </StackPanel>
     </Grid>
 </Page>

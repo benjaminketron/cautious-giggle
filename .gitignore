@@ -23,3 +23,5 @@
 /OAuthSite/bin
 /OAuthSite/obj
 /**/project.lock.json
+/CautiousGiggle.App/bin/x86/Debug
+/CautiousGiggle.App.Tests/obj/x86/Debug

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CautiousGiggle.App.ViewModels;
+using Microsoft.Practices.ServiceLocation;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +27,9 @@ namespace CautiousGiggle.App
         public MainPage()
         {
             this.InitializeComponent();
+            Items = ServiceLocator.Current.GetInstance<IItemsViewModel>();
         }
+
+        public IItemsViewModel Items { get; set; }
     }
 }
