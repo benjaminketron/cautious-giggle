@@ -91,6 +91,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!--A reference to the entire .Net Framework and Windows SDK are automatically included-->
+    <Content Include="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="project.json" />
     <SDKReference Include="TestPlatform.Universal, Version=$(UnitTestPlatformVersion)" />
   </ItemGroup>
@@ -99,7 +102,7 @@
     <Compile Include="UnitTestApp.xaml.cs">
       <DependentUpon>UnitTestApp.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UnitTest.cs" />
+    <Compile Include="TodoistTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="UnitTestApp.xaml">
@@ -125,6 +128,16 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CautiousGiggle.Core\CautiousGiggle.Core.csproj">
+      <Project>{7918cec7-7fcf-4de9-96ab-ba4ba7548d73}</Project>
+      <Name>CautiousGiggle.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CautiousGiggle.Data\CautiousGiggle.Data.csproj">
+      <Project>{38f94d90-d41e-47e6-b694-a9df71017e14}</Project>
+      <Name>CautiousGiggle.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

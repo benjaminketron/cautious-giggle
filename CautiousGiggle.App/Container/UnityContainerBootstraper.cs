@@ -7,6 +7,7 @@ using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,7 +20,8 @@ namespace CautiousGiggle.App.Container
             container.RegisterType<IItemsViewModel, ItemsViewModel>()
                 .RegisterType<IItemViewModel, ItemViewModel>()
                 .RegisterType<ITodoist, Todoist>()
-                .RegisterType<ITodoistStorage, TodoistStorage>();
+                .RegisterType<ITodoistStorage, TodoistStorage>()
+                .RegisterType<HttpClient>();
         }
 
         public static UnityServiceLocator ConfigureServiceLocator()
