@@ -3,7 +3,7 @@
     "Castle.Core": "4.1.0",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2",
     "Moq": "4.7.63",
-    "System.Diagnostics.TraceSource": "4.3.0",
+    "System.Diagnostics.TraceSource": "4.0.0",
     "xunit": "2.2.0",
     "xunit.runner.visualstudio": "2.2.0"
   },
