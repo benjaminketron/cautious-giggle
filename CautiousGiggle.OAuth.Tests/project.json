@@ -1,5 +1,6 @@
 ﻿{
   "dependencies": {
+    "Castle.Core": "4.1.1",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2",
     "Moq": "4.7.63",
     "System.Diagnostics.TraceSource": "4.3.0",
