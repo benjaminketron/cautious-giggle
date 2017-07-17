@@ -4,7 +4,7 @@ using Xunit;
 
 namespace CautiousGiggle.Storage.Tests
 {
-    public class UnitTest1
+    public class TodoistStorageTests
     {
         [Fact]
         public void TestMethod1()

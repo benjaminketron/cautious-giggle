@@ -11,6 +11,7 @@ namespace CautiousGiggle.Core.Storage
     {
         int AddUpdateItems(IEnumerable<Item> items);
         int DeleteItems(IEnumerable<Item> items);
+        bool ItemExists(Item item);
         string GetSyncToken();
         bool SetSyncToken(string syncToken);
     }

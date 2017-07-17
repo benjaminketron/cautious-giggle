@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace CautiousGiggle.Core.Data.Model
 {
     public class Item
     {
+        [PrimaryKey]
         public long id { get; set; }
         public long user_id { get; set; }
         public long project_id { get; set; }
