@@ -91,6 +91,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!--A reference to the entire .Net Framework and Windows SDK are automatically included-->
+    <Content Include="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="project.json" />
     <SDKReference Include="TestPlatform.Universal, Version=$(UnitTestPlatformVersion)" />
   </ItemGroup>
@@ -125,6 +128,16 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CautiousGiggle.Core\CautiousGiggle.Core.csproj">
+      <Project>{7918CEC7-7FCF-4DE9-96AB-BA4BA7548D73}</Project>
+      <Name>CautiousGiggle.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CautiousGiggle.Storage\CautiousGiggle.Storage.csproj">
+      <Project>{32db4b9e-ddf0-4d48-9ba5-a182cfbc8c61}</Project>
+      <Name>CautiousGiggle.Storage</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

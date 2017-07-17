@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CautiousGiggle.Core.Data.Model
+namespace CautiousGiggle.Core.Data.Models
 {
     public class SyncResponse
     {

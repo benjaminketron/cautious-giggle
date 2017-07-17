@@ -1,7 +1,7 @@
 ﻿
 using CautiousGiggle.App.ViewModels;
 using CautiousGiggle.Core.Data;
-using CautiousGiggle.Core.Data.Model;
+using CautiousGiggle.Core.Data.Models;
 using CautiousGiggle.Core.Storage;
 using Moq;
 using System;

@@ -10,6 +10,6 @@ namespace CautiousGiggle.App.ViewModels
     {
         // Properties
         string Content { get; set; }
-        int Id { get; set; }
+        long Id { get; set; }
     }
 }

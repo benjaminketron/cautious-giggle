@@ -1,4 +1,4 @@
-﻿using CautiousGiggle.Core.Data.Model;
+﻿using CautiousGiggle.Core.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

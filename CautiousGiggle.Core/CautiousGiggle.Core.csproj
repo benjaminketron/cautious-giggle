@@ -108,9 +108,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\ITodoist.cs" />
-    <Compile Include="Data\Model\Item.cs" />
-    <Compile Include="Data\Model\SyncResponse.cs" />
-    <Compile Include="Data\Model\SyncToken.cs" />
+    <Compile Include="Data\Models\Item.cs" />
+    <Compile Include="Data\Models\ItemFilter.cs" />
+    <Compile Include="Data\Models\SyncResponse.cs" />
+    <Compile Include="Data\Models\SyncToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Storage\ITodoistStorage.cs" />
     <EmbeddedResource Include="Properties\CautiousGiggle.Core.rd.xml" />

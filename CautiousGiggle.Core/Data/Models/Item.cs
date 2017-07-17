@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CautiousGiggle.Core.Data.Model
+namespace CautiousGiggle.Core.Data.Models
 {
     public class Item
     {
@@ -22,6 +22,7 @@ namespace CautiousGiggle.Core.Data.Model
         public long item_order { get; set; }
         public long day_order { get; set; }
         public int collapsed { get; set; }
+        [Ignore]
         public int[] labels { get; set; }
         public long? assigned_by_uid { get; set; }
         public long? responsible_uid { get; set; }

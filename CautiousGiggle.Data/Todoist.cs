@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CautiousGiggle.Core.Data.Model;
+using CautiousGiggle.Core.Data.Models;
 using System.Net.Http;
 using Newtonsoft.Json;
 

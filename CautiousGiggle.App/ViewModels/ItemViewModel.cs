@@ -1,4 +1,4 @@
-﻿using CautiousGiggle.Core.Data.Model;
+﻿using CautiousGiggle.Core.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace CautiousGiggle.App.ViewModels
             set { SetProperty(This.content, value, () => This.content = value); }
         }
 
-        public int Id
+        public long Id
         {
             get { return This.id;  }
             set { SetProperty(This.id, value, () => This.id = value);  }

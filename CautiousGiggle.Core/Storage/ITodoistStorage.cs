@@ -1,4 +1,4 @@
-﻿using CautiousGiggle.Core.Data.Model;
+﻿using CautiousGiggle.Core.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +11,7 @@ namespace CautiousGiggle.Core.Storage
     {
         int AddUpdateItems(IEnumerable<Item> items);
         int DeleteItems(IEnumerable<Item> items);
+        IEnumerable<Item> GetItems();
         bool ItemExists(Item item);
         string GetSyncToken();
         bool SetSyncToken(string syncToken);

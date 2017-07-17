@@ -1,5 +1,5 @@
 ﻿using CautiousGiggle.Core.Data;
-using CautiousGiggle.Core.Data.Model;
+using CautiousGiggle.Core.Data.Models;
 using CautiousGiggle.Core.Storage;
 using System;
 using System.Collections.Generic;
