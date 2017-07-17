@@ -139,6 +139,14 @@
       <Project>{7918CEC7-7FCF-4DE9-96AB-BA4BA7548D73}</Project>
       <Name>CautiousGiggle.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CautiousGiggle.Data\CautiousGiggle.Data.csproj">
+      <Project>{38F94D90-D41E-47E6-B694-A9DF71017E14}</Project>
+      <Name>CautiousGiggle.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CautiousGiggle.Storage\CautiousGiggle.Storage.csproj">
+      <Project>{32DB4B9E-DDF0-4D48-9BA5-A182CFBC8C61}</Project>
+      <Name>CautiousGiggle.Storage</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

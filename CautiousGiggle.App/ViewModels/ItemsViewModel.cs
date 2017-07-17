@@ -18,7 +18,8 @@ namespace CautiousGiggle.App.ViewModels
 
         private ObservableCollection<ItemViewModel> items;
         private int selectedIndex;
-        private int syncProgress;
+        private int syncProgressPercent;
+        private bool syncing;
 
         public ItemsViewModel(
             ITodoist todoist,
@@ -30,7 +31,8 @@ namespace CautiousGiggle.App.ViewModels
             this.items = new ObservableCollection<ItemViewModel>();
             
             this.selectedIndex = -1;
-            this.syncProgress = -1;
+            this.syncing = false;
+            this.syncProgressPercent = -1;
         }
 
         public ObservableCollection<ItemViewModel> Items
@@ -66,42 +68,86 @@ namespace CautiousGiggle.App.ViewModels
             }
         }
 
-        public int SyncProgress
+        public bool Syncing
         {
             get
             {
-                return syncProgress;
+                return syncing;
             }
             set
             {
-                if (SetProperty(ref syncProgress, value))
-                { RaisePropertyChanged(nameof(SyncProgress)); }
+                if (SetProperty(ref syncing, value))
+                { RaisePropertyChanged(nameof(Syncing)); }
+            }
+        }
+
+        public int SyncProgressPercent
+        {
+            get
+            {
+                return syncProgressPercent;
+            }
+            set
+            {
+                if (SetProperty(ref syncProgressPercent, value))
+                { RaisePropertyChanged(nameof(SyncProgressPercent)); }
             }
         }
 
         public async void SyncAsync()
         {
-            await Task.Run(() =>  Sync());
+            await Task.Run(() => Sync());
         }
 
         public virtual void Sync()
         {
-            // sync updated items list
-            //string syncToken = GetSyncToken();
-            //var syncResponse = SyncItems(syncToken);
-            //string newSnycToken = syncResponse.sync_token;
+            if (!this.Syncing)
+            {
+                this.Syncing = true;
 
-            //// At the moment we are not concerned about archived items. This is just an update to its status
-            //var addedOrUpdatedItems = syncResponse.items.Where(i => i.is_deleted != 1).ToList();
-            //var deletedItems = syncResponse.items.Where(i => i.is_deleted == 1).ToList();
+                this.SyncProgressPercent = 0;
 
-            //// update ui
-            //AddUpdateItemsUI(addedOrUpdatedItems);
-            //DeleteItemsUI(deletedItems);
+                // sync updated items list
+                string syncToken = GetSyncToken();
+                var syncResponse = SyncItems(syncToken);
+                if (syncResponse != null)
+                {
+                    string newSnycToken = syncResponse.sync_token;
 
-            //// update storage
-            //AddUpdatedItemsStorage(addedOrUpdatedItems);
-            //DeleteItemsUI(deletedItems);
+                    if (syncResponse.items != null)
+                    {
+                        // At the moment we are not concerned about archived items. This is just an update to its status
+                        var addedOrUpdatedItems = syncResponse.items.Where(i => i.is_deleted != 1).ToList();
+                        var deletedItems = syncResponse.items.Where(i => i.is_deleted == 1).ToList();
+
+                        var count = 0;
+                        int total = syncResponse.items.Length * 2;
+
+                        // update ui
+                        count += AddUpdateItemsUI(addedOrUpdatedItems);
+
+                        this.SyncProgressPercent = (int)(count / total * 100.0);
+
+                        count += DeleteItemsUI(deletedItems);
+
+                        this.SyncProgressPercent = (int)(count / total * 100.0);
+
+                        // update storage
+                        count += AddUpdatedItemsStorage(addedOrUpdatedItems);
+
+                        this.SyncProgressPercent = (int)(count / total * 100.0);
+
+                        count += DeleteItemsUI(deletedItems);
+
+                        this.SyncProgressPercent = (int)(count / total * 100.0);
+                    }
+
+                    this.SetSyncToken(newSnycToken);
+                }
+
+                this.Syncing = false;
+                this.SyncProgressPercent = 100;
+            }
         }
 
         /// <summary>
@@ -145,7 +191,27 @@ namespace CautiousGiggle.App.ViewModels
         /// <returns></returns>
         public virtual int AddUpdateItemsUI(IEnumerable<Item> items)
         {
-            throw new NotImplementedException();
+            int result = 0;
+            
+            if (items != null)
+            {
+                foreach (var item in items)
+                {
+                    var itemViewModel = this.items.FirstOrDefault(i => i.Id == item.id);
+                    if (itemViewModel != null)
+                    {
+                        var index = this.items.IndexOf(itemViewModel);
+                        if (index != -1)
+                        {
+                            this.items.RemoveAt(index);
+                            itemViewModel = new ItemViewModel(item);
+                            this.items.Insert(index, itemViewModel);
+                        }
+                    }
+                }
+                result = items.Count();
+            }
+            return result;
         }
 
         /// <summary>
@@ -156,7 +222,21 @@ namespace CautiousGiggle.App.ViewModels
         /// <returns></returns>
         public virtual int DeleteItemsUI(IEnumerable<Item> items)
         {
-            throw new NotImplementedException();
+            var result = 0;
+
+            if (items != null)
+            {
+                foreach (var item in items)
+                {
+                    var itemViewModel = this.items.FirstOrDefault(i => i.Id == item.id);
+                    if (itemViewModel != null)
+                    {
+                        this.items.Remove(itemViewModel);
+                    }
+                }
+                result = items.Count();
+            }
+            return result;
         }
 
         /// <summary>
@@ -176,7 +256,7 @@ namespace CautiousGiggle.App.ViewModels
         /// <returns></returns>
         public virtual int DeleteItemStoreStorage(IEnumerable<Item> items)
         {
-            throw new NotImplementedException();
+            return this.todoistStorage.DeleteItems(items);
         }
     }
 }

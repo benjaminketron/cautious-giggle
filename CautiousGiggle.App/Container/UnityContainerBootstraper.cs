@@ -1,4 +1,8 @@
 ﻿using CautiousGiggle.App.ViewModels;
+using CautiousGiggle.Core.Data;
+using CautiousGiggle.Core.Storage;
+using CautiousGiggle.Data;
+using CautiousGiggle.Storage;
 using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
@@ -13,7 +17,9 @@ namespace CautiousGiggle.App.Container
         public static void Configure(IUnityContainer container)
         {
             container.RegisterType<IItemsViewModel, ItemsViewModel>()
-                .RegisterType<IItemViewModel, ItemViewModel>();
+                .RegisterType<IItemViewModel, ItemViewModel>()
+                .RegisterType<ITodoist, Todoist>()
+                .RegisterType<ITodoistStorage, TodoistStorage>();
         }
 
         public static UnityServiceLocator ConfigureServiceLocator()
