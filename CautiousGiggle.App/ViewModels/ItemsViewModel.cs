@@ -21,8 +21,8 @@ namespace CautiousGiggle.App.ViewModels
         
         private ObservableCollection<ItemViewModel> items;
         private int selectedIndex;
+        private bool syncing;
         private int syncProgressPercent;
-        private bool syncing;        
 
         public ItemsViewModel(ITodoist todoist,
             ITodoistStorage todoistStorage)
@@ -38,7 +38,6 @@ namespace CautiousGiggle.App.ViewModels
             this.selectedIndex = -1;
             this.syncing = false;
             this.syncProgressPercent = -1;
-            
         }
 
         public CoreDispatcher Dispatcher { get; set; }

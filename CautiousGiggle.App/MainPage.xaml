@@ -10,22 +10,31 @@
     
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-        <StackPanel Grid.Column="0" Orientation="Vertical">
-            <ListView  x:Name="MainList" 
-              ItemsSource="{x:Bind Items.Items, Mode=OneWay}"  
-              SelectedIndex="{x:Bind Items.SelectedIndex, Mode=TwoWay}" 
-              MinWidth="250" Margin="5">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="viewModels:IItemViewModel">
-                        <TextBlock Text="{x:Bind Content, Mode=OneWay}" />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+        <ScrollViewer Grid.Column="0" Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Vertical">
+                <ListView  x:Name="MainList" 
+                  ItemsSource="{x:Bind Items.Items, Mode=OneWay}"  
+                  SelectedIndex="{x:Bind Items.SelectedIndex, Mode=TwoWay}" 
+                  Width="Auto">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="viewModels:IItemViewModel">
+                            <TextBlock Text="{x:Bind Content, Mode=OneWay}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </ScrollViewer>
+        
+        <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Vertical">
+            <ProgressBar Value="{x:Bind Items.SyncProgressPercent, Mode=OneWay}" Minimum="0" Maximum="100" />
             <Button Content="Sync" Click="{x:Bind  Items.SyncAsync}" Margin="5"/>
-            <TextBlock Text="{x:Bind Items.SyncProgressPercent, Mode=TwoWay}"/>
         </StackPanel>
     </Grid>
 </Page>
