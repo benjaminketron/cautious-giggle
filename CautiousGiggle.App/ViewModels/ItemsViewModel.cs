@@ -114,18 +114,28 @@ namespace CautiousGiggle.App.ViewModels
 
         public async void SyncAsync()
         {
-            if (!this.Syncing)
+            try
             {
-                this.Syncing = true;
+                if (!this.Syncing)
+                {
+                    this.Syncing = true;
+                    this.SyncProgressPercent = 0;
+
+                    var uiUpdates = await Task.Run<Dictionary<long, ItemViewModel>>(() => Sync());
+
+                    ItemsUpdatesUI(uiUpdates);
+
+                    this.Syncing = false;
+                    this.SyncProgressPercent = 100;
+                }
+            }
+            catch (Exception e)
+            {
+                this.Syncing = false;
                 this.SyncProgressPercent = 0;
 
-                var uiUpdates = await Task.Run<Dictionary<long, ItemViewModel>>(() => Sync());
-
-                ItemsUpdatesUI(uiUpdates);
-
-                this.Syncing = false;
-                this.SyncProgressPercent = 100;
-            }
+                // TODO Error reporting
+            }            
         }
 
         public virtual Dictionary<long, ItemViewModel> Sync()
