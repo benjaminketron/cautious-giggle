@@ -3,7 +3,7 @@
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3",
     "Newtonsoft.Json": "10.0.3",
     "System.Net.Http": "4.1.1",
-    "System.Runtime.Serialization.Primitives": "4.3.0"
+    "System.Runtime.Serialization.Primitives": "4.1.1"
   },
   "frameworks": {
     "uap10.0": {}
