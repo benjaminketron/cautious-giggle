@@ -3,12 +3,9 @@
     "Castle.Core": "4.1.0",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3",
     "Moq": "4.7.63",
+    "Newtonsoft.Json": "10.0.3",
     "System.Diagnostics.TraceSource": "4.0.0",
     "System.Net.Http": "4.1.1",
-    "System.Runtime.Serialization.Json": "4.0.1",
-    "System.Runtime.Serialization.Primitives": "4.1.0",
-    "System.Runtime.Serialization.Xml": "4.1.0",
-    "System.Private.DataContractSerialization": "4.1.0",
     "xunit": "2.2.0",
     "xunit.runner.visualstudio": "2.2.0"
   },

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace CautiousGiggle.Core.Data.Models
 {
+    /// <summary>
+    /// TODO move the SQLite-net attributes to a class that extends this one and overrides the parameters they decorate.
+    /// </summary>
     public class SyncToken
     {
         [PrimaryKey, AutoIncrement]
