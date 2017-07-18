@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
@@ -17,11 +18,11 @@ namespace CautiousGiggle.App.ViewModels
     {
         private readonly ITodoist todoist;
         private readonly ITodoistStorage todoistStorage;
-
+        
         private ObservableCollection<ItemViewModel> items;
         private int selectedIndex;
         private int syncProgressPercent;
-        private bool syncing;
+        private bool syncing;        
 
         public ItemsViewModel(ITodoist todoist,
             ITodoistStorage todoistStorage)
@@ -37,7 +38,10 @@ namespace CautiousGiggle.App.ViewModels
             this.selectedIndex = -1;
             this.syncing = false;
             this.syncProgressPercent = -1;
+            
         }
+
+        public CoreDispatcher Dispatcher { get; set; }
 
         public ObservableCollection<ItemViewModel> Items
         {
@@ -111,61 +115,61 @@ namespace CautiousGiggle.App.ViewModels
 
         public async void SyncAsync()
         {
-            var uiUpdates = await Task.Run<Dictionary<long, ItemViewModel>>(() => Sync());
-            ItemsUpdatesUI(uiUpdates);
+            if (!this.Syncing)
+            {
+                this.Syncing = true;
+                this.SyncProgressPercent = 0;
+
+                var uiUpdates = await Task.Run<Dictionary<long, ItemViewModel>>(() => Sync());
+
+                ItemsUpdatesUI(uiUpdates);
+
+                this.Syncing = false;
+                this.SyncProgressPercent = 100;
+            }
         }
 
         public virtual Dictionary<long, ItemViewModel> Sync()
         {
             Dictionary<long, ItemViewModel> uiUpdates = new Dictionary<long, ItemViewModel>();
 
-            if (!this.Syncing)
+            // sync updated items list
+            string syncToken = GetSyncToken();
+            var syncResponse = SyncItems(syncToken);
+            if (syncResponse != null)
             {
-                this.Syncing = true;
+                string newSnycToken = syncResponse.sync_token;
 
-                this.SyncProgressPercent = 0;
-
-                // sync updated items list
-                string syncToken = GetSyncToken();
-                var syncResponse = SyncItems(syncToken);
-                if (syncResponse != null)
+                if (syncResponse.items != null &&
+                    syncResponse.items.Count() > 0)
                 {
-                    string newSnycToken = syncResponse.sync_token;
+                    // At the moment we are not concerned about archived items. This is just an update to its status
+                    var addedOrUpdatedItems = syncResponse.items.Where(i => i.is_deleted != 1).ToList();
+                    var deletedItems = syncResponse.items.Where(i => i.is_deleted == 1).ToList();
 
-                    if (syncResponse.items != null &&
-                        syncResponse.items.Count() > 0)
-                    {
-                        // At the moment we are not concerned about archived items. This is just an update to its status
-                        var addedOrUpdatedItems = syncResponse.items.Where(i => i.is_deleted != 1).ToList();
-                        var deletedItems = syncResponse.items.Where(i => i.is_deleted == 1).ToList();
+                    var count = 0;
+                    int total = syncResponse.items.Length * 2;
 
-                        var count = 0;
-                        int total = syncResponse.items.Length * 2;
+                    // update ui
+                    count += AddUpdateItems(addedOrUpdatedItems, uiUpdates);
 
-                        // update ui
-                        count += AddUpdateItems(addedOrUpdatedItems, uiUpdates);
+                    DispatchSyncProgressPercentUpdate((int)(count / total * 100.0));
 
-                        this.SyncProgressPercent = (int)(count / total * 100.0);
+                    count += DeleteItems(deletedItems, uiUpdates);
 
-                        count += DeleteItems(deletedItems, uiUpdates);
+                    DispatchSyncProgressPercentUpdate((int)(count / total * 100.0));
 
-                        this.SyncProgressPercent = (int)(count / total * 100.0);
+                    // update storage
+                    count += AddUpdatedItemsStorage(addedOrUpdatedItems);
 
-                        // update storage
-                        count += AddUpdatedItemsStorage(addedOrUpdatedItems);
+                    DispatchSyncProgressPercentUpdate((int)(count / total * 100.0));
 
-                        this.SyncProgressPercent = (int)(count / total * 100.0);
+                    count += DeleteItemStorage(deletedItems);
 
-                        count += DeleteItemStorage(deletedItems);
-
-                        this.SyncProgressPercent = (int)(count / total * 100.0);
-                    }
-
-                    this.SetSyncToken(newSnycToken);
+                    DispatchSyncProgressPercentUpdate((int)(count / total * 100.0));
                 }
 
-                this.Syncing = false;
-                this.SyncProgressPercent = 100;
+                this.SetSyncToken(newSnycToken);
             }
 
             return uiUpdates;
@@ -320,6 +324,22 @@ namespace CautiousGiggle.App.ViewModels
         public virtual int DeleteItemStorage(IEnumerable<Item> items)
         {
             return this.todoistStorage.DeleteItems(items);
+        }
+
+        /// <summary>
+        /// Uses dispatcher to update the ProgressPercentUpdate property
+        /// </summary>
+        /// <param name="percent"></param>
+        public virtual void DispatchSyncProgressPercentUpdate(int percent)
+        {
+            if (Dispatcher != null)
+            {
+                var ignored = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    this.SyncProgressPercent = percent;
+
+                });
+            }
         }
     }
 }

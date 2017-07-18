@@ -25,7 +25,7 @@
                 </ListView.ItemTemplate>
             </ListView>
             <Button Content="Sync" Click="{x:Bind  Items.SyncAsync}" Margin="5"/>
-            <TextBox Text="{x:Bind Items.SyncProgressPercent, Mode=OneWay}"/>
+            <TextBlock Text="{x:Bind Items.SyncProgressPercent, Mode=TwoWay}"/>
         </StackPanel>
     </Grid>
 </Page>

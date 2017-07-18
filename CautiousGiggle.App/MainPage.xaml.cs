@@ -27,9 +27,16 @@ namespace CautiousGiggle.App
         public MainPage()
         {
             this.InitializeComponent();
-            Items = ServiceLocator.Current.GetInstance<IItemsViewModel>();
+            Items = ServiceLocator.Current.GetInstance<ItemsViewModel>();
+            Items.Dispatcher = Dispatcher;
+            Items.PropertyChanged += Items_PropertyChanged;
         }
 
-        public IItemsViewModel Items { get; set; }
+        private void Items_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            this.Bindings.Update();
+        }
+
+        public ItemsViewModel Items { get; set; }
     }
 }

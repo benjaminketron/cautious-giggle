@@ -60,7 +60,7 @@ namespace CautiousGiggle.App.Tests.ViewModels
                     Assert.NotNull(uiUpdates[key]);
                 }
             }).Verifiable();
-            itemsViewModel.Setup(m => m.DeleteItemsUI(It.IsAny<IEnumerable<Item>>(), It.IsAny< Dictionary<long, ItemViewModel>>())).Returns(1).Callback((IEnumerable<Item> items, Dictionary<long, ItemViewModel> uiUpdates) =>
+            itemsViewModel.Setup(m => m.DeleteItems(It.IsAny<IEnumerable<Item>>(), It.IsAny< Dictionary<long, ItemViewModel>>())).Returns(1).Callback((IEnumerable<Item> items, Dictionary<long, ItemViewModel> uiUpdates) =>
             {
                 Assert.Equal(1, items.Count());
                 Assert.Equal(1, uiUpdates.Keys.Count());
@@ -78,7 +78,9 @@ namespace CautiousGiggle.App.Tests.ViewModels
                 Assert.Equal(1, items.Count());
             }).Verifiable();
 
-            itemsViewModel.Object.Sync();
+            var result = itemsViewModel.Object.Sync();
+
+            Assert.NotNull(result);
         }
 
         [Fact]
