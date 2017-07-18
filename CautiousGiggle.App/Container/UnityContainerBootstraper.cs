@@ -20,8 +20,8 @@ namespace CautiousGiggle.App.Container
             container.RegisterType<IItemsViewModel, ItemsViewModel>()
                 .RegisterType<IItemViewModel, ItemViewModel>()
                 .RegisterType<ITodoist, Todoist>()
-                .RegisterType<ITodoistStorage, TodoistStorage>()
-                .RegisterType<HttpClient>();
+                .RegisterType<ITodoistStorage, TodoistStorage>(new InjectionConstructor($"todoist"))
+                .RegisterInstance<HttpClient>(new HttpClient());
         }
 
         public static UnityServiceLocator ConfigureServiceLocator()

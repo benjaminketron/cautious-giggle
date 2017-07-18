@@ -17,7 +17,7 @@ namespace CautiousGiggle.Storage
         /// <summary>
         /// Creates SQLite Database and Tables
         /// </summary>
-        public TodoistStorage(string databasePath = "todoist")
+        public TodoistStorage(string databasePath)
         {
             connection = new SQLiteConnection(databasePath);
             connection.CreateTable<Item>();

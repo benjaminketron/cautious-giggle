@@ -21,8 +21,7 @@ namespace CautiousGiggle.App.ViewModels
         private int syncProgressPercent;
         private bool syncing;
 
-        public ItemsViewModel(
-            ITodoist todoist,
+        public ItemsViewModel(ITodoist todoist,
             ITodoistStorage todoistStorage)
         {
             this.todoist = todoist;
