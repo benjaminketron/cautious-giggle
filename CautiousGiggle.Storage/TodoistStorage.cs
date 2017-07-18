@@ -86,7 +86,7 @@ namespace CautiousGiggle.Storage
         /// <returns></returns>
         public IEnumerable<Item> GetItems()
         {
-            var items = connection.Query<Item>("select * from Item where order by content asc", new object [] { });
+            var items = connection.Query<Item>("select * from Item order by content asc", new object [] { });
 
             // TODO select filters for each item in one select and mapp back onto items collection
 
