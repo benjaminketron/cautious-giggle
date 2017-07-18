@@ -51,19 +51,29 @@ namespace CautiousGiggle.App.Tests.ViewModels
 
             itemsViewModel.Setup(m => m.SyncItems(syncToken)).Returns(syncResponse).Verifiable();
             itemsViewModel.Setup(m => m.SetSyncToken(newSyncToken)).Returns(true).Verifiable();
-            itemsViewModel.Setup(m => m.AddUpdateItemsUI(It.IsAny<IEnumerable<Item>>())).Returns(2).Callback((IEnumerable<Item> items) =>
+            itemsViewModel.Setup(m => m.AddUpdateItems(It.IsAny<IEnumerable<Item>>(), It.IsAny<Dictionary<long, ItemViewModel>>())).Returns(2).Callback((IEnumerable<Item> items, Dictionary<long, ItemViewModel> uiUpdates) =>
             {
                 Assert.Equal(2, items.Count());
+                Assert.Equal(2, uiUpdates.Keys.Count());
+                foreach (var key in uiUpdates.Keys)
+                {
+                    Assert.NotNull(uiUpdates[key]);
+                }
             }).Verifiable();
-            itemsViewModel.Setup(m => m.DeleteItemsUI(It.IsAny<IEnumerable<Item>>())).Returns(1).Callback((IEnumerable<Item> items) =>
+            itemsViewModel.Setup(m => m.DeleteItemsUI(It.IsAny<IEnumerable<Item>>(), It.IsAny< Dictionary<long, ItemViewModel>>())).Returns(1).Callback((IEnumerable<Item> items, Dictionary<long, ItemViewModel> uiUpdates) =>
             {
                 Assert.Equal(1, items.Count());
+                Assert.Equal(1, uiUpdates.Keys.Count());
+                foreach (var key in uiUpdates.Keys)
+                {
+                    Assert.Null(uiUpdates[key]);
+                }
             }).Verifiable();
             itemsViewModel.Setup(m => m.AddUpdatedItemsStorage(It.IsAny<IEnumerable<Item>>())).Returns(2).Callback((IEnumerable<Item> items) =>
             {
                 Assert.Equal(2, items.Count());
             }).Verifiable();
-            itemsViewModel.Setup(m => m.DeleteItemStoreStorage(It.IsAny<IEnumerable<Item>>())).Returns(1).Callback((IEnumerable<Item> items) =>
+            itemsViewModel.Setup(m => m.DeleteItemStorage(It.IsAny<IEnumerable<Item>>())).Returns(1).Callback((IEnumerable<Item> items) =>
             {
                 Assert.Equal(1, items.Count());
             }).Verifiable();

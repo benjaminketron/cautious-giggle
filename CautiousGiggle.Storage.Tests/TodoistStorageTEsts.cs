@@ -132,5 +132,48 @@ namespace CautiousGiggle.Storage.Tests
 
             Assert.Equal(syncToken, resultSyncToken);
         }
+
+        [Fact]
+        public void GetItems_Order_By_Content_Ascending()
+        {
+            // make sure we are starting with an empty database
+            var todoistStorage = new TodoistStorage($"todoist{DateTime.UtcNow.Ticks}");
+
+            var items = todoistStorage.GetItems();
+            Assert.Equal(0, items.Count());
+
+            var item1 = new Item()
+            {
+                id = 1,
+                content = "Content 3"
+            };
+
+            var result = todoistStorage.AddUpdateItems(new Item[] { item1 });
+
+            Assert.Equal(1, result);
+
+            var item2 = new Item()
+            {
+                id = 2,
+                content = "Content 2"
+            };
+
+            var item3 = new Item()
+            {
+                id = 3,
+                content = "Content 1"
+            };
+
+            result = todoistStorage.AddUpdateItems(new Item[] { item2, item3 });
+
+            Assert.Equal(2, result);
+
+            items = todoistStorage.GetItems();
+
+            Assert.Equal(3, items.Count());
+            Assert.Equal("Content 1", items.Skip(0).FirstOrDefault().content);
+            Assert.Equal("Content 2", items.Skip(1).FirstOrDefault().content);
+            Assert.Equal("Content 3", items.Skip(2).FirstOrDefault().content);
+        }
     }
 }

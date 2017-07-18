@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="using:CautiousGiggle.App.ViewModels"
     mc:Ignorable="d">
-
+    
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -25,6 +25,7 @@
                 </ListView.ItemTemplate>
             </ListView>
             <Button Content="Sync" Click="{x:Bind  Items.SyncAsync}" Margin="5"/>
+            <TextBox Text="{x:Bind Items.SyncProgressPercent, Mode=OneWay}"/>
         </StackPanel>
     </Grid>
 </Page>

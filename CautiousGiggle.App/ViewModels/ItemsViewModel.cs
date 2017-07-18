@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
 
 namespace CautiousGiggle.App.ViewModels
 {
@@ -27,7 +29,10 @@ namespace CautiousGiggle.App.ViewModels
             this.todoist = todoist;
             this.todoistStorage = todoistStorage;
 
-            this.items = new ObservableCollection<ItemViewModel>();
+            // get saved items
+            var items = this.todoistStorage.GetItems().Select(i => new ItemViewModel(i)).ToList();
+
+            this.items = new ObservableCollection<ItemViewModel>(items);
             
             this.selectedIndex = -1;
             this.syncing = false;
@@ -76,7 +81,18 @@ namespace CautiousGiggle.App.ViewModels
             set
             {
                 if (SetProperty(ref syncing, value))
-                { RaisePropertyChanged(nameof(Syncing)); }
+                { 
+                    RaisePropertyChanged(nameof(Syncing));
+                    RaisePropertyChanged(nameof(SyncingVisibility));
+                }
+            }
+        }
+
+        public Visibility SyncingVisibility
+        {
+            get
+            {
+                return syncing ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
@@ -95,11 +111,14 @@ namespace CautiousGiggle.App.ViewModels
 
         public async void SyncAsync()
         {
-            await Task.Run(() => Sync());
+            var uiUpdates = await Task.Run<Dictionary<long, ItemViewModel>>(() => Sync());
+            ItemsUpdatesUI(uiUpdates);
         }
 
-        public virtual void Sync()
+        public virtual Dictionary<long, ItemViewModel> Sync()
         {
+            Dictionary<long, ItemViewModel> uiUpdates = new Dictionary<long, ItemViewModel>();
+
             if (!this.Syncing)
             {
                 this.Syncing = true;
@@ -113,7 +132,8 @@ namespace CautiousGiggle.App.ViewModels
                 {
                     string newSnycToken = syncResponse.sync_token;
 
-                    if (syncResponse.items != null)
+                    if (syncResponse.items != null &&
+                        syncResponse.items.Count() > 0)
                     {
                         // At the moment we are not concerned about archived items. This is just an update to its status
                         var addedOrUpdatedItems = syncResponse.items.Where(i => i.is_deleted != 1).ToList();
@@ -123,11 +143,11 @@ namespace CautiousGiggle.App.ViewModels
                         int total = syncResponse.items.Length * 2;
 
                         // update ui
-                        count += AddUpdateItemsUI(addedOrUpdatedItems);
+                        count += AddUpdateItems(addedOrUpdatedItems, uiUpdates);
 
                         this.SyncProgressPercent = (int)(count / total * 100.0);
 
-                        count += DeleteItemsUI(deletedItems);
+                        count += DeleteItems(deletedItems, uiUpdates);
 
                         this.SyncProgressPercent = (int)(count / total * 100.0);
 
@@ -136,7 +156,7 @@ namespace CautiousGiggle.App.ViewModels
 
                         this.SyncProgressPercent = (int)(count / total * 100.0);
 
-                        count += DeleteItemsUI(deletedItems);
+                        count += DeleteItemStorage(deletedItems);
 
                         this.SyncProgressPercent = (int)(count / total * 100.0);
                     }
@@ -147,6 +167,8 @@ namespace CautiousGiggle.App.ViewModels
                 this.Syncing = false;
                 this.SyncProgressPercent = 100;
             }
+
+            return uiUpdates;
         }
 
         /// <summary>
@@ -188,7 +210,7 @@ namespace CautiousGiggle.App.ViewModels
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        public virtual int AddUpdateItemsUI(IEnumerable<Item> items)
+        public virtual int AddUpdateItems(IEnumerable<Item> items, Dictionary<long, ItemViewModel> uiUpdates)
         {
             int result = 0;
             
@@ -196,17 +218,8 @@ namespace CautiousGiggle.App.ViewModels
             {
                 foreach (var item in items)
                 {
-                    var itemViewModel = this.items.FirstOrDefault(i => i.Id == item.id);
-                    if (itemViewModel != null)
-                    {
-                        var index = this.items.IndexOf(itemViewModel);
-                        if (index != -1)
-                        {
-                            this.items.RemoveAt(index);
-                            itemViewModel = new ItemViewModel(item);
-                            this.items.Insert(index, itemViewModel);
-                        }
-                    }
+                    // non-null indicates items with this id should be added or updated when we get back to the UI Thread
+                    uiUpdates[item.id] = new ItemViewModel(item); 
                 }
                 result = items.Count();
             }
@@ -219,7 +232,7 @@ namespace CautiousGiggle.App.ViewModels
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        public virtual int DeleteItemsUI(IEnumerable<Item> items)
+        public virtual int DeleteItems(IEnumerable<Item> items, Dictionary<long, ItemViewModel> uiUpdates)
         {
             var result = 0;
 
@@ -230,13 +243,64 @@ namespace CautiousGiggle.App.ViewModels
                     var itemViewModel = this.items.FirstOrDefault(i => i.Id == item.id);
                     if (itemViewModel != null)
                     {
-                        this.items.Remove(itemViewModel);
+                        uiUpdates[item.id] = null; // null indicates items with this id should be removed when we get back to the UI thread
                     }
                 }
                 result = items.Count();
             }
             return result;
         }
+
+        /// <summary>
+        /// Updates the Items observable collection in the UI thread utilising the uiUpdates dictionary. The keys are item ids and the values are
+        /// ItemViewModel objects. If a value is null this indicates a deletetion. If a value is not null then it is an addition or udpate which
+        /// are currently the same operation as we do not currently need to transfer information from the old object to new object at udpate.
+        /// </summary>
+        /// <param name="uiUpdates"></param>
+        public virtual void ItemsUpdatesUI(Dictionary<long, ItemViewModel> uiUpdates) 
+        {
+            if (uiUpdates != null)
+            {
+                foreach (var key in uiUpdates.Keys)
+                {
+                    // remove item if it exists in preparation for add / update / delete
+                    var currentItemViewModel = this.items.FirstOrDefault(i => i.Id == key);
+                    if (currentItemViewModel != null)
+                    {
+                        var index = this.items.IndexOf(currentItemViewModel);                            
+                        if (index > 0)
+                        {
+                            this.items.RemoveAt(index);
+                        }                            
+                    }
+                    
+                    var itemViewModel = uiUpdates[key];
+                    
+                    // indicates deletion
+                    if (itemViewModel == null)
+                    {
+                        // do nothing. we alreaddy removed this item
+                    }
+                    // indicated add / update
+                    else
+                    {
+                        var index = 0;
+                        // item just after the insertion point which is located at the index where we would like to insert
+                        var itemViewModelAfter = this.items.FirstOrDefault(i => (i?.Content ?? "").CompareTo(itemViewModel.Content ?? "") > 0);
+                        if (itemViewModelAfter != null)
+                        {
+                            index = this.items.IndexOf(itemViewModelAfter);
+                        }
+                        else if (this.items.Count() > 0)
+                        {
+                            index = this.items.Count();
+                        }
+                        this.items.Insert(index, itemViewModel);
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// Adds or updates the items in the collection in storage.
@@ -253,7 +317,7 @@ namespace CautiousGiggle.App.ViewModels
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        public virtual int DeleteItemStoreStorage(IEnumerable<Item> items)
+        public virtual int DeleteItemStorage(IEnumerable<Item> items)
         {
             return this.todoistStorage.DeleteItems(items);
         }

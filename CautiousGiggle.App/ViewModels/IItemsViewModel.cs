@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace CautiousGiggle.App.ViewModels
 {
@@ -13,9 +14,12 @@ namespace CautiousGiggle.App.ViewModels
         ObservableCollection<ItemViewModel> Items { get; set; }
         int SelectedIndex { get; set; }
         ItemViewModel SelectedItem { get; }
+        int SyncProgressPercent { get; set; }
+        bool Syncing { get; set; }
+        Visibility SyncingVisibility { get; }
 
         // Methods
         void SyncAsync();
-        void Sync();
+        Dictionary<long, ItemViewModel> Sync();
     }
 }
