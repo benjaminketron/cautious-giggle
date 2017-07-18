@@ -25,6 +25,5 @@ namespace CautiousGiggle.App.ViewModels
             get { return This.id;  }
             set { SetProperty(This.id, value, () => This.id = value);  }
         }
-
     }
 }
