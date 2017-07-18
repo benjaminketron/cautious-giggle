@@ -175,30 +175,5 @@ namespace CautiousGiggle.Storage.Tests
             Assert.Equal("Content 2", items.Skip(1).FirstOrDefault().content);
             Assert.Equal("Content 3", items.Skip(2).FirstOrDefault().content);
         }
-
-        [Fact]
-        public void GetItems_Ignores_Archived()
-        {
-            // make sure we are starting with an empty database
-            var todoistStorage = new TodoistStorage($"todoist{DateTime.UtcNow.Ticks}");
-
-            var items = todoistStorage.GetItems();
-            Assert.Equal(0, items.Count());
-
-            var item1 = new Item()
-            {
-                id = 1,
-                content = "Content 3",
-                is_archived = 1
-            };
-
-            var result = todoistStorage.AddUpdateItems(new Item[] { item1 });
-
-            Assert.Equal(1, result);
-
-            items = todoistStorage.GetItems();
-
-            Assert.Equal(0, items.Count());
-        }
     }
 }

@@ -81,13 +81,12 @@ namespace CautiousGiggle.Storage
 
         /// <summary>
         /// Returns a list of items that have been stored.
-        /// Does not return archived items.
         /// TODO Implement paging.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Item> GetItems()
         {
-            var items = connection.Query<Item>("select * from Item where is_archived = 0 order by content asc", new object [] { });
+            var items = connection.Query<Item>("select * from Item where order by content asc", new object [] { });
 
             // TODO select filters for each item in one select and mapp back onto items collection
 
