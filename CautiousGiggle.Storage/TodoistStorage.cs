@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CautiousGiggle.Core.Data.Models;
 using SQLite;
+using CautiousGiggle.Core.Config;
 
 namespace CautiousGiggle.Storage
 {
@@ -13,13 +14,18 @@ namespace CautiousGiggle.Storage
     {
         // wonder if there are downsides to holding this connection
         private SQLiteConnection connection;
+        private readonly ConfigurationSettings configurationSettings;
 
         /// <summary>
         /// Creates SQLite Database and Tables
         /// </summary>
-        public TodoistStorage(string databasePath)
+        public TodoistStorage(ConfigurationSettings configurationSettings)
         {
-            connection = new SQLiteConnection(databasePath);
+            this.configurationSettings = configurationSettings;
+
+            // TODO refactor storage layer to use same database, add User table, and refactor queries to indicate user id or token.
+            connection = new SQLiteConnection($"{this.configurationSettings.DatabasePath}{this.configurationSettings.Token}");
+
             connection.CreateTable<Item>();
             connection.CreateTable<ItemFilter>();
             connection.CreateTable<SyncToken>();

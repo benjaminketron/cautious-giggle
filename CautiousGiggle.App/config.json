@@ -1,0 +1,6 @@
+﻿{
+    "DatabasePath": "Todoist",
+    "TodoistApiUrl": "https://todoist.com/api/v7/sync",
+    "Token": "4238b2aba013852a793f55e6bca4825332cda0dd"
+    //"Token": "116925ae70d38f23ec04c233085ea7c0e035eb3b"
+}

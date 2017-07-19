@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CautiousGiggle.Core.Data.Models;
 using System.Net.Http;
 using Newtonsoft.Json;
+using CautiousGiggle.Core.Config;
 
 namespace CautiousGiggle.Data
 {
@@ -17,13 +18,17 @@ namespace CautiousGiggle.Data
         /// </summary>
         private readonly HttpClient httpClient;
 
+        private readonly ConfigurationSettings configurationSettings;
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="httpClient"></param>
-        public Todoist(HttpClient httpClient)
+        public Todoist(HttpClient httpClient, 
+            ConfigurationSettings configurationSettings)
         {
             this.httpClient = httpClient;
+            this.configurationSettings = configurationSettings;
         }
 
         /// <summary>
@@ -41,8 +46,10 @@ namespace CautiousGiggle.Data
                 new KeyValuePair<string, string>("sync_token", sync_token),
                 new KeyValuePair<string, string>("resource_types", JsonConvert.SerializeObject(resource_types))
             });
-            
-            var response = httpClient.PostAsync("https://todoist.com/api/v7/sync", content).Result;
+
+
+            // https://todoist.com/api/v7/sync
+            var response = httpClient.PostAsync(configurationSettings.TodoistApiUrl, content).Result;
             response.EnsureSuccessStatusCode();
             return JsonConvert.DeserializeObject<SyncResponse>(response.Content.ReadAsStringAsync().Result);
         }

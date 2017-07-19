@@ -5,6 +5,8 @@
 /.vs/cautious-giggle/v15/.suo
 /.vs/OAuthSite/v15/.suo
 /.vs
+/**/obj/
+/**/bin/
 /CautiousGiggle.App/obj/x86/Debug
 /CautiousGiggle.Core/bin/Debug
 /CautiousGiggle.Core/obj/Debug

@@ -1,4 +1,5 @@
-﻿using CautiousGiggle.Core.Data;
+﻿using CautiousGiggle.Core.Config;
+using CautiousGiggle.Core.Data;
 using CautiousGiggle.Core.Data.Models;
 using CautiousGiggle.Core.Storage;
 using System;
@@ -18,6 +19,7 @@ namespace CautiousGiggle.App.ViewModels
     {
         private readonly ITodoist todoist;
         private readonly ITodoistStorage todoistStorage;
+        private readonly ConfigurationSettings configurationSettings;
         
         private ObservableCollection<ItemViewModel> items;
         private int selectedIndex;
@@ -25,10 +27,12 @@ namespace CautiousGiggle.App.ViewModels
         private int syncProgressPercent;
 
         public ItemsViewModel(ITodoist todoist,
-            ITodoistStorage todoistStorage)
+            ITodoistStorage todoistStorage,
+            ConfigurationSettings configurationSettings)
         {
             this.todoist = todoist;
             this.todoistStorage = todoistStorage;
+            this.configurationSettings = configurationSettings;
 
             // get saved items
             var items = this.todoistStorage.GetItems().Select(i => new ItemViewModel(i)).ToList();
@@ -112,6 +116,9 @@ namespace CautiousGiggle.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Entry poiint of sync operations: sync remote data, display, save locally
+        /// </summary>
         public async void SyncAsync()
         {
             try
@@ -211,7 +218,7 @@ namespace CautiousGiggle.App.ViewModels
         /// <returns></returns>
         public virtual SyncResponse SyncItems(string syncToken)
         {
-            string token = "4238b2aba013852a793f55e6bca4825332cda0dd"; // TODO OAuth
+            string token = this.configurationSettings.Token; // TODO OAuth
             string [] resourceTypes = new string [] { "items" }; // TODO not sure if I like how this is coded. Perhaps a container for resource types?
 
             return this.todoist.Sync(token, syncToken, resourceTypes);

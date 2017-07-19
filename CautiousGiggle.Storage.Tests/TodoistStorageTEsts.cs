@@ -1,4 +1,5 @@
 ﻿
+using CautiousGiggle.Core.Config;
 using CautiousGiggle.Core.Data.Models;
 using CautiousGiggle.Core.Storage;
 using CautiousGiggle.Storage;
@@ -13,8 +14,13 @@ namespace CautiousGiggle.Storage.Tests
         [Fact]
         public void AddUpdateItems()
         {
-            // make sure we are starting with an empty database
-            var todoistStorage = new TodoistStorage($"todoist{DateTime.UtcNow.Ticks}");
+            var configurationSettings = new ConfigurationSettings()
+            {
+                // make sure we are starting with an empty database
+                DatabasePath = $"todoist{DateTime.UtcNow.Ticks}"
+            };
+
+            var todoistStorage = new TodoistStorage(configurationSettings);
 
             var item = new Item()
             {
@@ -44,8 +50,13 @@ namespace CautiousGiggle.Storage.Tests
         [Fact]
         public void AddUpdateItems_GetItems()
         {
-            // make sure we are starting with an empty database
-            var todoistStorage = new TodoistStorage($"todoist{DateTime.UtcNow.Ticks}");
+            var configurationSettings = new ConfigurationSettings()
+            {
+                // make sure we are starting with an empty database
+                DatabasePath = $"todoist{DateTime.UtcNow.Ticks}"
+            };
+
+            var todoistStorage = new TodoistStorage(configurationSettings);
 
             var items = todoistStorage.GetItems();
             Assert.Equal(0, items.Count());
@@ -105,8 +116,13 @@ namespace CautiousGiggle.Storage.Tests
         [Fact]
         public void SyncTokens()
         {
-            // make sure we are starting with an empty database
-            var todoistStorage = new TodoistStorage($"todoist{DateTime.UtcNow.Ticks}");
+            var configurationSettings = new ConfigurationSettings()
+            {
+                // make sure we are starting with an empty database
+                DatabasePath = $"todoist{DateTime.UtcNow.Ticks}"
+            };
+
+            var todoistStorage = new TodoistStorage(configurationSettings);
 
             var syncToken = todoistStorage.GetSyncToken();
 
@@ -136,8 +152,13 @@ namespace CautiousGiggle.Storage.Tests
         [Fact]
         public void GetItems_Order_By_Content_Ascending()
         {
-            // make sure we are starting with an empty database
-            var todoistStorage = new TodoistStorage($"todoist{DateTime.UtcNow.Ticks}");
+            var configurationSettings = new ConfigurationSettings()
+            {
+                // make sure we are starting with an empty database
+                DatabasePath = $"todoist{DateTime.UtcNow.Ticks}"
+            };
+
+            var todoistStorage = new TodoistStorage(configurationSettings);
 
             var items = todoistStorage.GetItems();
             Assert.Equal(0, items.Count());

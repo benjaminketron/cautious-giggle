@@ -1,6 +1,7 @@
 ﻿
 using CautiousGiggle.App.Container;
 using CautiousGiggle.App.ViewModels;
+using CautiousGiggle.Core.Config;
 using CautiousGiggle.Core.Data;
 using CautiousGiggle.Core.Data.Models;
 using CautiousGiggle.Core.Storage;
@@ -38,6 +39,12 @@ namespace CautiousGiggle.App.Tests.ViewModels
 
             Assert.NotNull(result4);
 
+            var result5 = container.Resolve<ConfigurationSettings>();
+
+            Assert.NotNull(result5);
+            Assert.Equal("Todoist", result5.DatabasePath);
+            Assert.Equal("https://todoist.com/api/v7/sync", result5.TodoistApiUrl);
+            Assert.NotNull(result5.Token); // because we are using a linked config.json; otherwise, we could hard code a value
         }
     }
 }

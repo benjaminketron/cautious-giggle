@@ -1,5 +1,6 @@
 ﻿
 using CautiousGiggle.App.ViewModels;
+using CautiousGiggle.Core.Config;
 using CautiousGiggle.Core.Data;
 using CautiousGiggle.Core.Data.Models;
 using CautiousGiggle.Core.Storage;
@@ -19,7 +20,14 @@ namespace CautiousGiggle.App.Tests.ViewModels
             Mock<ITodoist> todoist = new Mock<ITodoist>();
             Mock<ITodoistStorage> todoistStorage = new Mock<ITodoistStorage>();
 
-            Mock<ItemsViewModel> itemsViewModel = new Mock<ItemsViewModel>(todoist.Object, todoistStorage.Object) { CallBase = true };
+            ConfigurationSettings configurationSettings = new ConfigurationSettings()
+            {
+                DatabasePath = "Todoist",
+                TodoistApiUrl = "https://todoist.com/api/v7/sync",
+                Token = "4238b2aba013852a793f55e6bca4825332cda0dd"
+            };
+
+            Mock<ItemsViewModel> itemsViewModel = new Mock<ItemsViewModel>(todoist.Object, todoistStorage.Object, configurationSettings) { CallBase = true };
 
             var syncToken = "syncToken";
             var newSyncToken = "newSyncToken";
@@ -82,7 +90,14 @@ namespace CautiousGiggle.App.Tests.ViewModels
             Mock<ITodoist> todoist = new Mock<ITodoist>();
             Mock<ITodoistStorage> todoistStorage = new Mock<ITodoistStorage>();
 
-            Mock<ItemsViewModel> itemsViewModel = new Mock<ItemsViewModel>(todoist.Object, todoistStorage.Object) { CallBase = true };
+            ConfigurationSettings configurationSettings = new ConfigurationSettings()
+            {
+                DatabasePath = "Todoist",
+                TodoistApiUrl = "https://todoist.com/api/v7/sync",
+                Token = "4238b2aba013852a793f55e6bca4825332cda0dd"
+            };
+
+            Mock<ItemsViewModel> itemsViewModel = new Mock<ItemsViewModel>(todoist.Object, todoistStorage.Object, configurationSettings) { CallBase = true };
 
             var syncToken = "syncToken";
             var newSyncToken = "newSyncToken";
@@ -105,10 +120,16 @@ namespace CautiousGiggle.App.Tests.ViewModels
             Mock<ITodoist> todoist = new Mock<ITodoist>();
             Mock<ITodoistStorage> todoistStorage = new Mock<ITodoistStorage>();
 
-            Mock<ItemsViewModel> itemsViewModel = new Mock<ItemsViewModel>(todoist.Object, todoistStorage.Object) { CallBase = true };
+            ConfigurationSettings configurationSettings = new ConfigurationSettings()
+            {
+                DatabasePath = "Todoist",
+                TodoistApiUrl = "https://todoist.com/api/v7/sync",
+                Token = "4238b2aba013852a793f55e6bca4825332cda0dd"
+            };
+
+            Mock<ItemsViewModel> itemsViewModel = new Mock<ItemsViewModel>(todoist.Object, todoistStorage.Object, configurationSettings) { CallBase = true };
 
             var syncToken = "syncToken";
-            var newSyncToken = "newSyncToken";
             SyncResponse syncResponse = null;
 
             itemsViewModel.Setup(m => m.GetSyncToken()).Returns(syncToken).Verifiable();
